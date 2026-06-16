@@ -1,25 +1,33 @@
-require(dotenv).config();
-const express = require("express")
+require("dotenv").config();
+const path =
+    require("path");
+const express = require("express");
+const cors = require("cors");
 
-const app = express()
+const app = express();
 
-app.get("/", (req, res) => {
-    res.send("Backend funcionando")
-})
+const gestosRoutes = require("./src/routes/gestos");
+const authRoutes = require("./src/routes/auth");
+app.use(cors());
 
-app.listen(3000, () => {
-    console.log("Servidor corriendo en http://localhost:3000")
-})
-app.use("/audios",
-    express.static("audios")
+app.use(express.json());
+app.use(
+    "/audios",
+    express.static(
+        path.join(
+            __dirname,
+            "audios"
+        )
+    )
 );
-app.post("/sensores", (req, res) => {
+app.use(
+    "/api/auth",
+    authRoutes
+);
+app.use("/api/gestos", gestosRoutes);
 
-    const valores = req.body.sensores;
+const PORT = process.env.PORT || 3000;
 
-    const gesto = detectarGesto(valores);
-
-    res.json({
-        gesto: gesto
-    });
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en puerto ${PORT}`);
 });

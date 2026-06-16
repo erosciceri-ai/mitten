@@ -2,13 +2,44 @@ const express = require("express");
 
 const router = express.Router();
 
+const authMiddleware =
+    require("../middleware/authMiddleware");
+
 const {
-    crearGesto,
-    obtenerGestos
+    crear,
+    listar,
+    sync,
+    actualizar,
+    borrar
 } = require("../controllers/gestosController");
+router.put(
+    "/:id",
+    authMiddleware,
+    actualizar
+);
 
-router.post("/", crearGesto);
+router.post(
+    "/",
+    authMiddleware,
+    crear
+);
 
-router.get("/", obtenerGestos);
+router.get(
+    "/",
+    authMiddleware,
+    listar
+);
+
+router.get(
+    "/sync",
+    authMiddleware,
+    sync
+);
+
+router.delete(
+    "/:id",
+    authMiddleware,
+    borrar
+);
 
 module.exports = router;
